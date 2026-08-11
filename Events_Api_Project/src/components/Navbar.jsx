@@ -1,27 +1,28 @@
-import { NavLink } from "react-router";
+import { NavLink, Link } from "react-router";
+import logo from "../assets/Logo.svg";
+
 export default function Navbar() {
   const navClass = ({ isActive }) => {
-    return isActive ? "btn btn-primary btn-sm" : "btn btn-sm btn-ghost";
+    return isActive ? "link link-primary no-underline" : "link no-underline";
   };
 
   return (
-    <header className="navbar bg-base-100 px-4 shadow-sm">
+    <header className="navbar px-4">
       <div className="flex-1">
-        <span className="text-xl font-bold">User Directory</span>
+        <Link to="/">
+          <img src={logo} alt="User Directory" className="h-8" />
+        </Link>
       </div>
-      <nav className="flex gap-1">
-        <NavLink to="/" className={navClass}>
-          Home
-        </NavLink>
+      <nav className="flex gap-1 bg-base-200 px-4 py-2 gap-8 items-center">
         <NavLink to="/createevent" className={navClass}>
           Create Event
         </NavLink>
         <NavLink to="/signin" className={navClass}>
           Sign In
         </NavLink>
-        <NavLink to="/signup" className={navClass}>
+        <Link to="/signup" className="btn btn-primary">
           Sign Up
-        </NavLink>
+        </Link>
       </nav>
     </header>
   );
