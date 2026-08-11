@@ -9,21 +9,18 @@ import Home from "./pages/Home.jsx";
 import CreateEvent from "./pages/CreateEvent.jsx";
 import EventDetails from "./pages/EventDetails.jsx";
 // import NotFound from "./pages/NotFound.jsx";
+
 function App() {
   const [count, setCount] = useState(0);
 
   return (
     <Routes>
       <Route element={<MainLayout />}>
-        {
-          <Route path="/" element={<Home />} />
-          /*<Route path="/signin" element={<SignIn />} />
-        <Route path="/signup" element={<SignUp />} /> */
-        }
+        <Route path="/" element={<Home />} />
+        {/* <Route path="/signin" element={<SignIn />} />
+        <Route path="/signup" element={<SignUp />} /> */}
         <Route path="/createevent" element={<CreateEvent />} />
-
-        {/* <Route path=":id" element={<EventDetails />} /> */}
-
+        <Route path="/events/:id" element={<EventDetails />} />
         {/* <Route path="*" element={<NotFound />} /> */}
       </Route>
     </Routes>
