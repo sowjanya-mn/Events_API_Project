@@ -58,12 +58,17 @@ export default function CreateEvent() {
     // try/catch/finally: try the request, catch any network failure,
     // and finally always runs regardless of success or failure
     try {
-      // Call our token-injecting fetch wrapper.
-      // JSON.stringify converts the formData JS object into a JSON string,
-      // since that's the format HTTP request bodies need to be sent as
+      // The API expects the event title to be sent as `title`, not `name`.
+      // Keep the form field as `name` for the UI but transform it before POST.
+      const payload = {
+        ...formData,
+        title: formData.name,
+      };
+      delete payload.name;
+
       const res = await apiFetch("/api/events", {
         method: "POST",
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
 
       // 401 = "not authenticated at all", 403 = "authenticated but not
