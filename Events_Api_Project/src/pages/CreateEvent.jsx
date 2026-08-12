@@ -1,66 +1,92 @@
+import { useState } from "react";
+import { useNavigate } from "react-router";
+import apiFetch from "../utils/api.js";
+
 export default function CreateEvent() {
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    name: "",
+    date: "",
+    location: "",
+    description: "",
+  });
+  const [error, setError] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+    setError(null);
+
+    try {
+      const res = await apiFetch("/api/events", {
+        method: "POST",
+        body: JSON.stringify(formData),
+      });
+
+      if (res.status === 401 || res.status === 403) {
+        setError("Session expired. Please sign in again.");
+        return;
+      }
+
+      if (!res.ok) {
+        setError("Couldn't create event. Try again.");
+        return;
+      }
+
+      navigate("/");
+    } catch {
+      setError("Network error. Check your connection and try again.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <h1 className="text-3xl font-bold mb-6">Create Event</h1>
-      <form className="bg-white p-6 rounded shadow-md w-full max-w-md">
-        <div className="mb-4">
-          <label
-            htmlFor="eventName"
-            className="block text-gray-700 font-bold mb-2"
-          >
-            Event Name
-          </label>
-          <input
-            type="text"
-            id="eventName"
-            className="border border-gray-300 rounded py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-        <div className="mb-4">
-          <label
-            htmlFor="eventDescription"
-            className="block text-gray-700 font-bold mb-2"
-          >
-            Description
-          </label>
-          <textarea
-            id="eventDescription"
-            className="border border-gray-300 rounded py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          ></textarea>
-        </div>
-        <div className="mb-4">
-          <label
-            htmlFor="eventDate"
-            className="block text-gray-700 font-bold mb-2"
-          >
-            Date
-          </label>
-          <input
-            type="date"
-            id="eventDate"
-            className="border border-gray-300 rounded py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-        <div className="mb-4">
-          <label
-            htmlFor="eventTime"
-            className="block text-gray-700 font-bold mb-2"
-          >
-            Time
-          </label>
-          <input
-            type="time"
-            id="eventTime"
-            className="border border-gray-300 rounded py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-        <button
-          type="submit"
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        >
-          Create Event
-        </button>
-      </form>
-    </div>
+    <form onSubmit={handleSubmit} className="p-4 max-w-md mx-auto flex flex-col gap-3">
+      <h1 className="text-2xl font-bold">Create Event</h1>
+
+      <input
+        name="name"
+        placeholder="Event name"
+        value={formData.name}
+        onChange={handleChange}
+        required
+        className="input input-bordered w-full"
+      />
+      <input
+        name="date"
+        type="date"
+        value={formData.date}
+        onChange={handleChange}
+        required
+        className="input input-bordered w-full"
+      />
+      <input
+        name="location"
+        placeholder="Location"
+        value={formData.location}
+        onChange={handleChange}
+        required
+        className="input input-bordered w-full"
+      />
+      <textarea
+        name="description"
+        placeholder="Description"
+        value={formData.description}
+        onChange={handleChange}
+        className="textarea textarea-bordered w-full"
+      />
+
+      {error && <p className="text-error text-sm">{error}</p>}
+
+      <button type="submit" disabled={submitting} className="btn btn-primary">
+        {submitting ? "Creating..." : "Create Event"}
+      </button>
+    </form>
   );
 }
