@@ -6,9 +6,9 @@ export default function CreateEvent() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
+    description: "",
     date: "",
     location: "",
-    description: "",
   });
   const [error, setError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
@@ -47,46 +47,81 @@ export default function CreateEvent() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-4 max-w-md mx-auto flex flex-col gap-3">
-      <h1 className="text-2xl font-bold">Create Event</h1>
+    <div className="max-w-md mx-auto px-4 py-12">
+      <h1 className="text-4xl font-extrabold text-center mb-10">
+        Create an Event
+      </h1>
 
-      <input
-        name="name"
-        placeholder="Event name"
-        value={formData.name}
-        onChange={handleChange}
-        required
-        className="input input-bordered w-full"
-      />
-      <input
-        name="date"
-        type="date"
-        value={formData.date}
-        onChange={handleChange}
-        required
-        className="input input-bordered w-full"
-      />
-      <input
-        name="location"
-        placeholder="Location"
-        value={formData.location}
-        onChange={handleChange}
-        required
-        className="input input-bordered w-full"
-      />
-      <textarea
-        name="description"
-        placeholder="Description"
-        value={formData.description}
-        onChange={handleChange}
-        className="textarea textarea-bordered w-full"
-      />
+      <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+        <div>
+          <label htmlFor="name" className="block font-semibold mb-1">
+            Event name
+          </label>
+          <input
+            id="name"
+            name="name"
+            type="text"
+            value={formData.name}
+            onChange={handleChange}
+            required
+            className="w-full bg-gray-100 rounded-md px-3 py-2 outline-none focus:ring-2 focus:ring-black"
+          />
+        </div>
 
-      {error && <p className="text-error text-sm">{error}</p>}
+        <div>
+          <label htmlFor="description" className="block font-semibold mb-1">
+            Description
+          </label>
+          <textarea
+            id="description"
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
+            rows={4}
+            className="w-full bg-gray-100 rounded-md px-3 py-2 outline-none focus:ring-2 focus:ring-black resize-none"
+          />
+        </div>
 
-      <button type="submit" disabled={submitting} className="btn btn-primary">
-        {submitting ? "Creating..." : "Create Event"}
-      </button>
-    </form>
+        <div>
+          <label htmlFor="date" className="block font-semibold mb-1">
+            Date
+          </label>
+          <input
+            id="date"
+            name="date"
+            type="date"
+            value={formData.date}
+            onChange={handleChange}
+            required
+            className="w-full bg-gray-100 rounded-md px-3 py-2 outline-none focus:ring-2 focus:ring-black"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="location" className="block font-semibold mb-1">
+            Location
+          </label>
+          <input
+            id="location"
+            name="location"
+            type="text"
+            value={formData.location}
+            onChange={handleChange}
+            required
+            className="w-full bg-gray-100 rounded-md px-3 py-2 outline-none focus:ring-2 focus:ring-black"
+          />
+        </div>
+
+        {error && <p className="text-red-600 text-sm">{error}</p>}
+
+        <button
+          type="submit"
+          disabled={submitting}
+          className="w-full bg-black text-white font-bold rounded-md py-3 mt-2 hover:bg-gray-800 transition-colors disabled:opacity-50"
+        >
+          {submitting ? "Creating..." : "Create"}
+        </button>
+      </form>
+    </div>
   );
 }
