@@ -31,3 +31,7 @@
   font-weight: 600;
   font-size: 1rem;
 }
+
+.link:hover {
+  color: #e94d4f;
+}
