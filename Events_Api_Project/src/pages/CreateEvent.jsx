@@ -81,7 +81,16 @@ export default function CreateEvent() {
       // res.ok is true only for 2xx status codes. Anything else that
       // isn't already handled above (400, 500, etc.) falls here
       if (!res.ok) {
-        setError("Couldn't create event. Try again.");
+        // Try to extract the actual error message from the backend response
+        try {
+          const errorData = await res.json();
+          // Check if the backend included a message we can show the user
+          const backendMessage = errorData.message || errorData.error || "Couldn't create event. Try again.";
+          setError(backendMessage);
+        } catch {
+          // If we can't parse the error response, show a generic message
+          setError(`Couldn't create event (${res.status}). Try again.`);
+        }
         return;
       }
 
@@ -120,6 +129,11 @@ export default function CreateEvent() {
           <label htmlFor="name" className="block font-semibold mb-1">
             Event name
           </label>
+          {/* Character count display: shows user how many chars they've typed.
+              This helps them understand the 255 char limit before submission */}
+          <div className="text-xs text-gray-500 mb-1">
+            {formData.name.length} / 255 characters
+          </div>
           <input
             id="name"
             name="name" // must match the key in formData/handleChange
@@ -127,8 +141,17 @@ export default function CreateEvent() {
             value={formData.name} // "controlled input" — React owns the value
             onChange={handleChange} // updates formData on every keystroke
             required // browser blocks submit if this is empty
+            maxLength="255" // HTML5 attribute: prevents typing beyond 255 chars (backend limit)
             className="w-full bg-gray-100 rounded-md px-3 py-2 outline-none focus:ring-2 focus:ring-black"
           />
+          {/* Validation message: warn if title exceeds backend's 255 char limit.
+              This prevents users from getting a confusing 500 error from the server.
+              We show the error immediately so they can fix it before clicking Submit */}
+          {formData.name.length > 255 && (
+            <p className="text-red-600 text-sm mt-1">
+              ⚠️ Title must be under 255 characters
+            </p>
+          )}
         </div>
 
         {/* --- Description field (multi-line, so textarea not input) --- */}
@@ -136,15 +159,26 @@ export default function CreateEvent() {
           <label htmlFor="description" className="block font-semibold mb-1">
             Description
           </label>
+          {/* Character counter for description (backend limit: 255 chars) */}
+          <div className="text-xs text-gray-500 mb-1">
+            {formData.description.length} / 255 characters
+          </div>
           <textarea
             id="description"
             name="description"
             value={formData.description}
             onChange={handleChange}
             rows={4} // sets the visible height to 4 lines of text
+            maxLength="255" // HTML5 attribute: prevents typing beyond 255 chars
             className="w-full bg-gray-100 rounded-md px-3 py-2 outline-none focus:ring-2 focus:ring-black resize-none"
             // resize-none = user can't drag-resize the textarea corner
           />
+          {/* Error if description exceeds 255 chars */}
+          {formData.description.length > 255 && (
+            <p className="text-red-600 text-sm mt-1">
+              ⚠️ Description must be under 255 characters
+            </p>
+          )}
         </div>
 
         {/* --- Date field — type="date" gives a native calendar picker --- */}
@@ -168,15 +202,26 @@ export default function CreateEvent() {
           <label htmlFor="location" className="block font-semibold mb-1">
             Location
           </label>
+          {/* Character counter for location (backend limit: 255 chars) */}
+          <div className="text-xs text-gray-500 mb-1">
+            {formData.location.length} / 255 characters
+          </div>
           <input
             id="location"
             name="location"
             type="text"
             value={formData.location}
             onChange={handleChange}
+            maxLength="255" // HTML5 attribute: prevents typing beyond 255 chars
             required
             className="w-full bg-gray-100 rounded-md px-3 py-2 outline-none focus:ring-2 focus:ring-black"
           />
+          {/* Error if location exceeds 255 chars */}
+          {formData.location.length > 255 && (
+            <p className="text-red-600 text-sm mt-1">
+              ⚠️ Location must be under 255 characters
+            </p>
+          )}
         </div>
 
         {/* Only renders this <p> at all if error is truthy (not null).
@@ -186,8 +231,16 @@ export default function CreateEvent() {
 
         <button
           type="submit"
-          // Greys out and blocks clicks while a request is already in flight
-          disabled={submitting}
+          // Greys out and blocks clicks while:
+          // 1. A request is already in flight (submitting = true)
+          // 2. OR any field exceeds the 255 char backend limit
+          // This prevents confusing "500 error" responses from the server
+          disabled={
+            submitting ||
+            formData.name.length > 255 ||
+            formData.description.length > 255 ||
+            formData.location.length > 255
+          }
           className="w-full bg-black text-white font-bold rounded-md py-3 mt-2 hover:bg-gray-800 transition-colors disabled:opacity-50"
         >
           {/* Ternary: show "Creating..." while submitting, "Create" otherwise */}
