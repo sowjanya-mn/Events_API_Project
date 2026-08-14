@@ -1,11 +1,14 @@
 import { useState, useEffect } from "react";
 import EventCard from "../components/EventCard.jsx";
+import { Link } from "react-router";
+
 
 export default function Home() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  //fetch events and sort by date
   useEffect(() => {
     const loadEvents = async () => {
       try {
