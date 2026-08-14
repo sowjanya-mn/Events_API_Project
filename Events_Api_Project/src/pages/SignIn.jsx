@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Home from "./Home";
 export default function SignIn({ setSuccessMessageFromSignUp }) {
@@ -7,9 +7,16 @@ export default function SignIn({ setSuccessMessageFromSignUp }) {
     email: "",
     password: "",
   });
-  const [isSuccess, setIsSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
-  //const [showSignIn, setShowSignIn] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isSignedIn, setIsSignedIn] = useState(() => {
+    return localStorage.getItem("userToken") !== null;
+  });
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setIsSignedIn(localStorage.getItem("userToken") !== null);
+    };
+  }, []);
   // 2. Update state whenever a user types
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -32,25 +39,23 @@ export default function SignIn({ setSuccessMessageFromSignUp }) {
         },
         body: JSON.stringify(formData),
       });
-      console.log("Response from server:", response);
       if (response.ok) {
         const data = await response.json();
         const token = data.token;
         if (token) {
           localStorage.setItem("userToken", token);
-          alert("Sign in successful!");
-        } else {
-          console.error(
-            "The server responded successfully, but no token was found in the data.",
-          );
+          setIsSignedIn(true);
+          window.location.reload();
         }
-        setIsSuccess(true);
+        setIsSignedIn(true);
+      } else {
+        setErrorMessage("Invalid email or password. Please try again.");
       }
     } catch (error) {
       console.error("Error connecting to the server:", error);
     }
   };
-  if (isSuccess) {
+  if (isSignedIn) {
     return <Home />;
   }
   return (
@@ -59,10 +64,10 @@ export default function SignIn({ setSuccessMessageFromSignUp }) {
       {/* Forms a rounded card component matching your white design style */}
       <form
         onSubmit={handleSubmit}
-        className="card w-full max-w-sm bg-base-100 shadow-xl p-8 space-y-4"
+        className="card w-full max-w-md bg-base-100 shadow-xl p-8 space-y-4 rounded-lg"
       >
         <h5 className="text-green-600">{setSuccessMessageFromSignUp}</h5>
-
+        <h5 className="text-red-500">{errorMessage}</h5>
         <h2 className="text-2xl font-bold text-center mb-2">
           Sign In to continue
         </h2>

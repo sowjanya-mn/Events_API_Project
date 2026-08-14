@@ -8,7 +8,7 @@ import SignIn from "./pages/SignIn.jsx";
 import SignUp from "./pages/SignUp.jsx";
 import CreateEvent from "./pages/CreateEvent.jsx";
 import EventDetails from "./pages/EventDetails.jsx";
-// import NotFound from "./pages/NotFound.jsx";
+import NotFound from "./pages/NotFound.jsx";
 function App() {
   const [count, setCount] = useState(0);
 
@@ -23,7 +23,7 @@ function App() {
 
         {/* <Route path=":id" element={<EventDetails />} /> */}
 
-        {/* <Route path="*" element={<NotFound />} /> */}
+        <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
   );
