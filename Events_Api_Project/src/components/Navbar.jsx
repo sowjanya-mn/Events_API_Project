@@ -5,7 +5,11 @@ export default function Navbar() {
   const navClass = ({ isActive }) => {
     return isActive ? "link link-primary no-underline" : "link no-underline";
   };
-
+  let isSignedIn = false; // Replace with your actual logic to check if the user is signed in
+  const token = localStorage.getItem("userToken");
+  if (token !== null) {
+    isSignedIn = true;
+  }
   return (
     <header className="navbar px-4">
       <div className="flex-1">
@@ -17,12 +21,29 @@ export default function Navbar() {
         <NavLink to="/createevent" className={navClass}>
           Create Event
         </NavLink>
-        <NavLink to="/signin" className={navClass}>
-          Sign In
-        </NavLink>
-        <Link to="/signup" className="btn btn-primary">
-          Sign Up
-        </Link>
+        {/* Put this block inside your Navbar menu stack */}
+        {isSignedIn && (
+          <NavLink
+            to="#" /* Sets a placeholder path */
+            onClick={(e) => {
+              e.preventDefault(); // 1. STOPS the link from navigating anywhere
+
+              // 2. RUN your custom click actions here!
+              localStorage.removeItem("userToken"); // Clears your login session
+              alert("Signed out successfully!");
+              window.location.reload(); // Reloads the page to update the buttons
+            }}
+            className={navClass} /* Keeps your beautiful theme styles active */
+          >
+            Sign Out
+          </NavLink>
+        )}
+
+        {!isSignedIn && (
+          <NavLink to="/signup" className={navClass}>
+            Sign Up
+          </NavLink>
+        )}
       </nav>
     </header>
   );
