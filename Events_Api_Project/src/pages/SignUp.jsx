@@ -9,8 +9,9 @@ export default function SignUp() {
     password: "",
   });
   const [isSuccess, setIsSuccess] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const [showSignIn, setShowSignIn] = useState(false);
+  const [isUserExists, setIsUserExists] = useState(false);
 
   //const [showSignIn, setShowSignIn] = useState(false);
   // 2. Update state whenever a user types
@@ -26,7 +27,7 @@ export default function SignUp() {
   const handleSubmit = async (e) => {
     // Prevent the page from reloading
     e.preventDefault();
-
+    setErrorMessage("");
     try {
       // Send the POST request to your API
       const response = await fetch("/api/users", {
@@ -36,30 +37,45 @@ export default function SignUp() {
         },
         body: JSON.stringify(formData),
       });
-      console.log("Response from server:", response);
       if (response.ok) {
         setShowSignIn(true);
-      } else {
-        alert("Something went wrong.");
+      } else if (response.status === 400) {
+        setErrorMessage("Sign up failed. Please provide a valid email.");
+      } else if (response.status === 409) {
+        setIsUserExists(true);
+        setErrorMessage(" Username already exists. Please Sign In");
       }
     } catch (error) {
       console.error("Error connecting to the server:", error);
+      setErrorMessage("Sign up failed. Please try again.");
     }
   };
+
   if (showSignIn) {
     return (
       <SignIn setSuccessMessageFromSignUp="Sign up successful! Please sign in." />
     );
   }
 
+  if (isUserExists) {
+    return (
+      <SignIn setSuccessMessageFromSignUp="User already exists. Please sign in." />
+    );
+  }
+
   return (
     // Centers the card layout perfectly on the light grey background screen
-    <div className="flex min-h-screen items-center justify-center bg-base-200 p-4">
+    <div className="flex min-h-screen items-center justify-center bg-base-200 p-2">
       {/* Forms a rounded card component matching your white design style */}
       <form
         onSubmit={handleSubmit}
-        className="card w-full max-w-sm bg-base-100 shadow-xl p-8 space-y-4"
+        className="card w-full max-w-md bg-base-100 shadow-xl p-6 space-y-4 rounded-lg"
       >
+        {errorMessage && (
+          <h5 className="text-red-500 font-bold text-sm text-center bg-red-50 border border-red-200 p-2 rounded-lg">
+            {errorMessage}
+          </h5>
+        )}
         <h2 className="text-2xl font-bold text-center mb-2">
           Create an Account
         </h2>
@@ -99,8 +115,8 @@ export default function SignUp() {
         </div>
 
         {/* Submit Action using your customized red button styles */}
-        <div className="form-control mt-6">
-          <button type="submit" className="btn btn-primary w-full">
+        <div className="form-control mt-6 flex justify-center mt-4">
+          <button type="submit" className="btn btn-primary w-50 ">
             Sign Up
           </button>
         </div>

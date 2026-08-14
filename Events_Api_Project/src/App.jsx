@@ -5,8 +5,9 @@ import SignIn from "./pages/SignIn.jsx";
 import SignUp from "./pages/SignUp.jsx";
 import CreateEvent from "./pages/CreateEvent.jsx";
 import EventDetails from "./pages/EventDetails.jsx";
-import ProtectedRoute from "./components/ProtectedRoute.jsx";
-// import NotFound from "./pages/NotFound.jsx";
+import NotFound from "./pages/NotFound.jsx";
+function App() {
+  const [count, setCount] = useState(0);
 
 function App() {
   return (
@@ -21,7 +22,7 @@ function App() {
           <Route path="/createevent" element={<CreateEvent />} />
         </Route>
 
-        {/* <Route path="*" element={<NotFound />} /> */}
+        <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
   );
