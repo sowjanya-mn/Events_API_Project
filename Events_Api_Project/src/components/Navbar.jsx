@@ -1,7 +1,8 @@
-import { NavLink, Link } from "react-router";
+import { NavLink, Link, useNavigate } from "react-router";
 import logo from "../assets/Logo.svg";
 
 export default function Navbar() {
+  const navigate = useNavigate();
   const navClass = ({ isActive }) => {
     return isActive ? "link link-primary no-underline" : "link no-underline";
   };
