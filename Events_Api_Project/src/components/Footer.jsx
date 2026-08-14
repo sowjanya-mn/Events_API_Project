@@ -4,16 +4,16 @@ export default function Footer() {
   return (
     <footer className="footer flex flex-row justify-between items-end p-4 bg-base-300 text-base-content">
       <div>
-        <p className="text-6xl font-bold">© Gather 2026</p>
+        <p>Copyright © 2026 - All right reserved by User Directory</p>
       </div>
       <div className="pr-16">
-        <a href="https://twitch.tv">
+        <a href="https://twitch.tv" className="link">
           Twitch
         </a>
-        <a href="https://instagram.com">
+        <a href="https://instagram.com" className="link">
           Instagram
         </a>
-        <a href="https://facebook.com">
+        <a href="https://facebook.com" className="link">
           Facebook
         </a>
       </div>

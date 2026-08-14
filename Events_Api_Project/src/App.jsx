@@ -1,7 +1,4 @@
-import { StrictMode, useState } from "react";
-import { createRoot } from "react-dom/client";
-import "./index.css";
-import { BrowserRouter, Routes, Route } from "react-router";
+import { Routes, Route } from "react-router";
 import MainLayout from "./layouts/MainLayout.jsx";
 import Home from "./pages/Home.jsx";
 import SignIn from "./pages/SignIn.jsx";
@@ -12,16 +9,18 @@ import NotFound from "./pages/NotFound.jsx";
 function App() {
   const [count, setCount] = useState(0);
 
+function App() {
   return (
     <Routes>
       <Route element={<MainLayout />}>
         <Route path="/" element={<Home />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/events/:id" element={<EventDetails />} />
 
-        <Route path="/createevent" element={<CreateEvent />} />
-
-        {/* <Route path=":id" element={<EventDetails />} /> */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/createevent" element={<CreateEvent />} />
+        </Route>
 
         <Route path="*" element={<NotFound />} />
       </Route>
