@@ -12,7 +12,6 @@ export default function SignUp() {
   const [errorMessage, setErrorMessage] = useState("");
   const [showSignIn, setShowSignIn] = useState(false);
   const [isUserExists, setIsUserExists] = useState(false);
-  console.log("isUserExists:", isUserExists);
 
   //const [showSignIn, setShowSignIn] = useState(false);
   // 2. Update state whenever a user types
@@ -38,13 +37,11 @@ export default function SignUp() {
         },
         body: JSON.stringify(formData),
       });
-      console.log("Response from server:", response);
       if (response.ok) {
         setShowSignIn(true);
       } else if (response.status === 400) {
         setErrorMessage("Sign up failed. Please provide a valid email.");
       } else if (response.status === 409) {
-        console.log(response.status);
         setIsUserExists(true);
         setErrorMessage(" Username already exists. Please Sign In");
       }
@@ -53,21 +50,18 @@ export default function SignUp() {
       setErrorMessage("Sign up failed. Please try again.");
     }
   };
-  console.log("isUserExists:", isUserExists);
 
   if (showSignIn) {
     return (
       <SignIn setSuccessMessageFromSignUp="Sign up successful! Please sign in." />
     );
   }
-  console.log("isUserExists:", isUserExists);
 
   if (isUserExists) {
     return (
       <SignIn setSuccessMessageFromSignUp="User already exists. Please sign in." />
     );
   }
-  console.log("isUserExists:", isUserExists);
 
   return (
     // Centers the card layout perfectly on the light grey background screen
