@@ -1,9 +1,19 @@
 import { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
-export default function SignIn({ setSuccessMessageFromSignUp, setIsSignedIn }) {
+// export default function SignIn({
+//   setSuccessMessageFromSignUp,
+//   setIsSignedIn,
+//   setUserExistMessage,
+// }) {
+export default function SignIn({ setIsSignedIn }) {
   const navigate = useNavigate();
+  // const location = useLocation();
+  // const signUpSuccessMessage = location.state?.successMessage || "";
+  // const signUpErrorMessage = location.state?.errorMessage || "";
   const location = useLocation();
+  const signUpSuccessMessage = location.state?.successMessage || "";
+  const signUpErrorMessage = location.state?.errorMessage || "";
 
   // Grab the saved location route path, or default to home "/"
   const redirectPath = location.state?.from?.pathname || "/";
@@ -62,9 +72,29 @@ export default function SignIn({ setSuccessMessageFromSignUp, setIsSignedIn }) {
     <div className="flex min-h-screen items-center justify-center bg-base-200 p-4">
       <form
         onSubmit={handleSubmit}
-        className="card w-full max-w-md bg-base-100 shadow-xl p-8 space-y-4 rounded-lg"
+        className="card w-full max-w-sm bg-base-100 shadow-xl p-4 space-y-4 rounded-lg"
       >
-        <h5 className="text-green-600">{setSuccessMessageFromSignUp}</h5>
+        {/* <h5 className="text-green-600">{setSuccessMessageFromSignUp}</h5>
+        <h5 className="text-red-600">{setUserExistMessage}</h5> */}
+        {/* {signUpSuccessMessage && !errorMessage && (
+          <h5 className="text-green-600 font-bold text-sm text-center bg-green-50 border border-green-200 p-2 rounded-lg">
+            {signUpSuccessMessage}
+          </h5>
+        )}
+
+        {signUpErrorMessage && !errorMessage && (
+          <h5 className="text-red-500 font-bold text-sm text-center bg-red-50 border border-red-200 p-2 rounded-lg">
+            {signUpErrorMessage}
+          </h5>
+        )} */}
+
+        {signUpSuccessMessage && (
+          <h5 className="text-green-600">{signUpSuccessMessage}</h5>
+        )}
+        {signUpErrorMessage && (
+          <h5 className="text-red-600">{signUpErrorMessage}</h5>
+        )}
+
         <h5 className="text-red-500">{errorMessage}</h5>
         <h2 className="text-2xl font-bold text-center mb-2">
           Sign In to continue
@@ -78,6 +108,7 @@ export default function SignIn({ setSuccessMessageFromSignUp, setIsSignedIn }) {
             type="email"
             name="email"
             id="email"
+            placeholder="name@example.com"
             value={formData.email}
             onChange={handleChange}
             required
@@ -93,6 +124,7 @@ export default function SignIn({ setSuccessMessageFromSignUp, setIsSignedIn }) {
             type="password"
             name="password"
             id="password"
+            placeholder="********"
             value={formData.password}
             onChange={handleChange}
             required
@@ -100,8 +132,8 @@ export default function SignIn({ setSuccessMessageFromSignUp, setIsSignedIn }) {
           />
         </div>
 
-        <div className="form-control mt-6">
-          <button type="submit" className="btn btn-primary w-full">
+        <div className="form-control mt-6 flex justify-center mt-4">
+          <button type="submit" className="btn btn-primary w-70">
             Sign In
           </button>
         </div>
