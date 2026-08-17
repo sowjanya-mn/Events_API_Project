@@ -8,6 +8,7 @@ import CreateEvent from "./pages/CreateEvent.jsx";
 import EventDetails from "./pages/EventDetails.jsx";
 import NotFound from "./pages/NotFound.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
+
 function App() {
   const [isSignedIn, setIsSignedIn] = useState(() => {
     return localStorage.getItem("userToken") !== null;
