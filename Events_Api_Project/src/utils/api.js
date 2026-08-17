@@ -9,7 +9,7 @@ export default function apiFetch(url, options = {}) {
   // Read the token fresh from localStorage on every call — this matters
   // because the token can change between calls (user logs in, logs out,
   // token expires) — we don't want to cache a stale value
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("userToken");
 
   // Build the final set of headers to send with the request
   const headers = {

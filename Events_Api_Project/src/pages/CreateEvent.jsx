@@ -65,7 +65,7 @@ export default function CreateEvent() {
         title: formData.name,
       };
       delete payload.name;
-
+      console.log("Submitting payload:", payload);
       const res = await apiFetch("/api/events", {
         method: "POST",
         body: JSON.stringify(payload),
@@ -85,7 +85,10 @@ export default function CreateEvent() {
         try {
           const errorData = await res.json();
           // Check if the backend included a message we can show the user
-          const backendMessage = errorData.message || errorData.error || "Couldn't create event. Try again.";
+          const backendMessage =
+            errorData.message ||
+            errorData.error ||
+            "Couldn't create event. Try again.";
           setError(backendMessage);
         } catch {
           // If we can't parse the error response, show a generic message
@@ -121,7 +124,6 @@ export default function CreateEvent() {
       {/* The form itself. onSubmit fires handleSubmit when submitted.
           flex-col + gap-5 stacks the fields vertically with even spacing */}
       <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-
         {/* --- Event name field --- */}
         <div>
           {/* htmlFor="name" links this label to the input with id="name" —
