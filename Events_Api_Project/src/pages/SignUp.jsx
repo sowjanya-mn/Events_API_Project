@@ -1,9 +1,11 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import Home from "./Home";
 import SignIn from "./SignIn";
 export default function SignUp() {
   // 1. Create state to hold the input values
+  const navigate = useNavigate();
+  const location = useLocation();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -38,12 +40,24 @@ export default function SignUp() {
         body: JSON.stringify(formData),
       });
       if (response.ok) {
-        setShowSignIn(true);
+        navigate("/signin", {
+          state: {
+            from: location.state?.from, // Keeps track of /createevent
+            successMessage: "Sign up successful! Please sign in.",
+            //errorMessage: "User already exists. Please sign in.",
+          },
+        });
       } else if (response.status === 400) {
         setErrorMessage("Sign up failed. Please provide a valid email.");
       } else if (response.status === 409) {
-        setIsUserExists(true);
-        setErrorMessage(" Username already exists. Please Sign In");
+        navigate("/signin", {
+          state: {
+            from: location.state?.from, // Keeps track of /createevent
+            //setErrorMessage: "User already exists. Please sign in.",
+            errorMessage: "User already exists. Please sign in.",
+          },
+        });
+        //setErrorMessage(" Username already exists. Please Sign In");
       }
     } catch (error) {
       console.error("Error connecting to the server:", error);
@@ -59,24 +73,24 @@ export default function SignUp() {
 
   if (isUserExists) {
     return (
-      <SignIn setSuccessMessageFromSignUp="User already exists. Please sign in." />
+      <SignIn setUserExistMessage="User already exists. Please sign in." />
     );
   }
 
   return (
     // Centers the card layout perfectly on the light grey background screen
-    <div className="flex min-h-screen items-center justify-center bg-base-200 p-2">
+    <div className="flex min-h-screen items-center justify-center bg-base-200 p-4">
       {/* Forms a rounded card component matching your white design style */}
       <form
         onSubmit={handleSubmit}
-        className="card w-full max-w-md bg-base-100 shadow-xl p-6 space-y-4 rounded-lg"
+        className="card w-full max-w-sm bg-base-100 shadow-xl p-4 space-y-4 rounded-lg"
       >
         {errorMessage && (
           <h5 className="text-red-500 font-bold text-sm text-center bg-red-50 border border-red-200 p-2 rounded-lg">
             {errorMessage}
           </h5>
         )}
-        <h2 className="text-2xl font-bold text-center mb-2">
+        <h2 className="text-2xl font-bold text-center mb-2 pt-4">
           Create an Account
         </h2>
 
@@ -106,7 +120,7 @@ export default function SignUp() {
             type="password"
             name="password"
             id="password"
-            placeholder="******"
+            placeholder="********"
             value={formData.password}
             onChange={handleChange}
             required
@@ -116,7 +130,7 @@ export default function SignUp() {
 
         {/* Submit Action using your customized red button styles */}
         <div className="form-control mt-6 flex justify-center mt-4">
-          <button type="submit" className="btn btn-primary w-50 ">
+          <button type="submit" className="btn btn-primary w-70 ">
             Sign Up
           </button>
         </div>
