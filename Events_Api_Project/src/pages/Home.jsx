@@ -11,7 +11,7 @@ export default function Home() {
   useEffect(() => {
     const loadEvents = async () => {
       try {
-        const res = await fetch("/api/events");
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/events`);
         console.log("Response from API:", res);
         if (!res.ok) {
           console.error("Failed to fetch events:", res.status, res.statusText);
