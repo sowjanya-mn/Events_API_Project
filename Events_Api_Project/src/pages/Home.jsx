@@ -13,7 +13,11 @@ export default function Home() {
     const loadEvents = async () => {
       try {
         const res = await fetch("/api/events");
-        if (!res.ok) throw new Error("Failed to fetch events");
+        if (!res.ok) {
+        setError("Couldn't load events. Try again later.");
+        setLoading(false);
+        return;
+      }
         const data = await res.json();
         const items = Array.isArray(data?.results)
           ? data.results
@@ -22,8 +26,9 @@ export default function Home() {
             : [];
 
         const sorted = [...items].sort(
-          (a, b) => new Date(a.date) - new Date(b.date)
-        );
+        (a, b) => Date.parse(a.date) - Date.parse(b.date)
+      );
+
         setEvents(sorted);
       } catch {
         setError("Couldn't load events. Try again later.");

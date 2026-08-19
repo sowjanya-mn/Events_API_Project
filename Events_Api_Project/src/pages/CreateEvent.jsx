@@ -243,7 +243,7 @@ export default function CreateEvent() {
             formData.description.length > 255 ||
             formData.location.length > 255
           }
-          className="w-full bg-black text-white font-bold rounded-md py-3 mt-2 hover:bg-gray-800 transition-colors disabled:opacity-50"
+          className="w-full btn btn-primary"
         >
           {/* Ternary: show "Creating..." while submitting, "Create" otherwise */}
           {submitting ? "Creating..." : "Create"}

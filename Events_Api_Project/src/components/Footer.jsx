@@ -2,9 +2,9 @@ import { Link } from "react-router";
 
 export default function Footer() {
   return (
-    <footer className="footer flex flex-row justify-between items-end p-4 bg-base-300 text-base-content">
+    <footer className="footer flex flex-row justify-between items-end p-12 bg-base-300 text-base-content">
       <div>
-        <p>Copyright © 2026 - All right reserved by User Directory</p>
+        <p className="text-6xl font-bold">© Gather 2026</p>
       </div>
       <div className="pr-16">
         <a href="https://twitch.tv" className="link">
