@@ -12,7 +12,9 @@ export default function Home() {
     const loadEvents = async () => {
       try {
         const res = await fetch("/api/events");
+        console.log("Response from API:", res);
         if (!res.ok) {
+          console.error("Failed to fetch events:", res.status, res.statusText);
           setError("Couldn't load events. Try again later.");
           setLoading(false);
           return;
