@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import EventCard from "../components/EventCard.jsx";
 import { Link } from "react-router";
 
-
 export default function Home() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -12,12 +11,12 @@ export default function Home() {
   useEffect(() => {
     const loadEvents = async () => {
       try {
-        const res = await fetch("/api/events");
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/events`);
         if (!res.ok) {
-        setError("Couldn't load events. Try again later.");
-        setLoading(false);
-        return;
-      }
+          setError("Couldn't load events. Try again later.");
+          setLoading(false);
+          return;
+        }
         const data = await res.json();
         const items = Array.isArray(data?.results)
           ? data.results
@@ -26,8 +25,8 @@ export default function Home() {
             : [];
 
         const sorted = [...items].sort(
-        (a, b) => Date.parse(a.date) - Date.parse(b.date)
-      );
+          (a, b) => Date.parse(a.date) - Date.parse(b.date),
+        );
 
         setEvents(sorted);
       } catch {

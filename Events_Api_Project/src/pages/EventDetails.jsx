@@ -23,7 +23,9 @@ export default function EventDetails() {
   useEffect(() => {
     const loadEvent = async () => {
       try {
-        const res = await fetch(`/api/events/${id}`);
+        const res = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/events/${id}`,
+        );
         if (!res.ok) throw new Error("Event not found");
         const data = await res.json();
         setEvent(data);
