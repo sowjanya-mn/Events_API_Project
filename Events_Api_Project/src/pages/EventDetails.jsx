@@ -62,7 +62,7 @@ export default function EventDetails() {
       <img
         src={imageSrc}
         alt={event.title || event.name || "Event"}
-        className="mb-4 h-72 w-full rounded-xl object-cover"
+        className="mb-4 h-120 w-full object-cover"
         onError={(e) => {
           const nextIndex = (fallbackIndex + 1) % fallbackImages.length;
           e.currentTarget.src = fallbackImages[nextIndex];
