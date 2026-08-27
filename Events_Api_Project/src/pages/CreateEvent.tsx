@@ -66,7 +66,7 @@ export default function CreateEvent() {
       };
       delete payload.name;
       console.log("Submitting payload:", payload);
-      const res = await apiFetch("/api/events", {
+      const res = await apiFetch(`${import.meta.env.VITE_API_URL}/api/events`, {
         method: "POST",
         body: JSON.stringify(payload),
       });
