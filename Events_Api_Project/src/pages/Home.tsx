@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import EventCard from "../components/EventCard.jsx";
+import EventCard from "../components/EventCard.js";
 import { Link } from "react-router";
 
 export default function Home() {
