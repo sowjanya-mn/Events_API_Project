@@ -1,9 +1,10 @@
-// Import the navigation hook from React Router — lets us change the URL
-// programmatically (i.e. without the user clicking an <a> tag)
 import { useNavigate } from "react-router";
+import type { Event } from "../types/index";
 
-// EventCard receives one "event" object as a prop (destructured directly
-// in the function signature) — this component renders ONE card
+interface EventCardProps {
+  event: Event;
+}
+
 const fallbackImages = [
   "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1200&q=80",
   "https://images.unsplash.com/photo-1505373877841-8d25f7d46678?auto=format&fit=crop&w=1200&q=80",
@@ -17,7 +18,7 @@ const fallbackImages = [
   "https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&w=1200&q=80",
 ];
 
-export default function EventCard({ event }) {
+export default function EventCard({ event }: EventCardProps) {
   const navigate = useNavigate();
 
   const handleClick = () => {

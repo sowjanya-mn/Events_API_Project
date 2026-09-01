@@ -2,7 +2,12 @@ import { Outlet } from "react-router";
 import Navbar from "../components/Navbar.js";
 import Footer from "../components/Footer.js";
 
-export default function MainLayout({ isSignedIn, setIsSignedIn }) {
+interface MainLayoutProps {
+  isSignedIn: boolean;
+  setIsSignedIn: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export default function MainLayout({ isSignedIn, setIsSignedIn }: MainLayoutProps) {
   return (
     <div className="flex min-h-screen flex-col">
       <Navbar isSignedIn={isSignedIn} setIsSignedIn={setIsSignedIn} />

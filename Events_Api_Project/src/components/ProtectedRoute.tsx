@@ -7,9 +7,9 @@ interface ProtectedRouteProps {
 
 export default function ProtectedRoute({ isSignedIn }: ProtectedRouteProps) {
   const location = useLocation();
+  const { isAuthenticated } = useAuth();
 
-  const hasToken = localStorage.getItem("userToken") !== null;
-  const isUserAuthenticated = isSignedIn || hasToken;
+  const isUserAuthenticated = isSignedIn || isAuthenticated();
 
   if (!isUserAuthenticated) {
     return <Navigate to="/signin" state={{ from: location }} replace />;

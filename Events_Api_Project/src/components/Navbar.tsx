@@ -1,16 +1,22 @@
-import { NavLink, Link, useNavigate } from "react-router";
+import { NavLink, Link } from "react-router";
 import logo from "../assets/Logo.svg";
 
-export default function Navbar() {
-  const navigate = useNavigate();
-  const navClass = ({ isActive }) => {
+interface NavbarProps {
+  isSignedIn: boolean;
+  setIsSignedIn: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export default function Navbar({ isSignedIn, setIsSignedIn }: NavbarProps) {
+  const navClass = ({ isActive }: { isActive: boolean }) => {
     return isActive ? "link link-primary no-underline" : "link no-underline";
   };
-  let isSignedIn = false; // Replace with your actual logic to check if the user is signed in
-  const token = localStorage.getItem("userToken");
-  if (token !== null) {
-    isSignedIn = true;
-  }
+
+  const handleSignOut = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    localStorage.removeItem("userToken");
+    setIsSignedIn(false);
+  };
+
   return (
     <header className="navbar px-4">
       <div className="flex-1">
@@ -22,20 +28,9 @@ export default function Navbar() {
         <NavLink to="/createevent" className={navClass}>
           Create Event
         </NavLink>
-        {/* Put this block inside your Navbar menu stack */}
-        {isSignedIn && (
-          <NavLink
-            to="#" /* Sets a placeholder path */
-            onClick={(e) => {
-              e.preventDefault(); // 1. STOPS the link from navigating anywhere
 
-              // 2. RUN your custom click actions here!
-              localStorage.removeItem("userToken"); // Clears your login session
-              alert("Signed out successfully!");
-              window.location.reload(); // Reloads the page to update the buttons
-            }}
-            className={navClass} /* Keeps your beautiful theme styles active */
-          >
+        {isSignedIn && (
+          <NavLink to="#" onClick={handleSignOut} className={navClass}>
             Sign Out
           </NavLink>
         )}

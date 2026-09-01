@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router";
+import type { Event } from "../types/index";
+import { buildApiUrl } from "../utils/apiConfig.js";
 
 const fallbackImages = [
   "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1200&q=80",
@@ -16,18 +18,16 @@ const fallbackImages = [
 
 export default function EventDetails() {
   const { id } = useParams();
-  const [event, setEvent] = useState(null);
+  const [event, setEvent] = useState<Event | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const loadEvent = async () => {
       try {
-        const res = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/events/${id}`,
-        );
+        const res = await fetch(buildApiUrl(`/api/events/${id}`));
         if (!res.ok) throw new Error("Event not found");
-        const data = await res.json();
+        const data = (await res.json()) as Event;
         setEvent(data);
       } catch {
         setError("Event not found");
@@ -43,8 +43,8 @@ export default function EventDetails() {
     return <p className="p-4">Loading event...</p>;
   }
 
-  if (error) {
-    return <p className="p-4 text-error">{error}</p>;
+  if (error || !event) {
+    return <p className="p-4 text-error">{error ?? "Event not found"}</p>;
   }
 
   const fallbackIndex = Number(event.id || 0) % fallbackImages.length;
