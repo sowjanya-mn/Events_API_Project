@@ -9,6 +9,7 @@ import { useNavigate } from "react-router";
 // Our custom fetch wrapper — automatically attaches the Authorization
 // header with the token, so we don't have to do it manually here
 import apiFetch from "../utils/api.js";
+import { buildApiUrl } from "../utils/apiConfig.js";
 
 export default function CreateEvent() {
   // Grab the navigate function so we can redirect after submit
@@ -66,7 +67,7 @@ export default function CreateEvent() {
       };
       delete payload.name;
       console.log("Submitting payload:", payload);
-      const res = await apiFetch(`${import.meta.env.VITE_API_URL}/api/events`, {
+      const res = await apiFetch(buildApiUrl("/api/events"), {
         method: "POST",
         body: JSON.stringify(payload),
       });

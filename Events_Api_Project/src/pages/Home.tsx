@@ -1,26 +1,26 @@
 import { useState, useEffect } from "react";
 import EventCard from "../components/EventCard.js";
-import { Link } from "react-router";
+import type { Event } from "../types/index";
+import { buildApiUrl } from "../utils/apiConfig.js";
 
 export default function Home() {
-  const [events, setEvents] = useState([]);
+  const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
-  //fetch events and sort by date
   useEffect(() => {
     const loadEvents = async () => {
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/events`);
-        console.log("Response from API:", res);
+        const res = await fetch(buildApiUrl("/api/events"));
+
         if (!res.ok) {
-          console.error("Failed to fetch events:", res.status, res.statusText);
           setError("Couldn't load events. Try again later.");
           setLoading(false);
           return;
         }
-        const data = await res.json();
-        const items = Array.isArray(data?.results)
+
+        const data = (await res.json()) as { results?: Event[] } | Event[] | null;
+        const items: Event[] = Array.isArray(data?.results)
           ? data.results
           : Array.isArray(data)
             ? data

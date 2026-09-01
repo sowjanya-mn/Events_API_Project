@@ -1,63 +1,58 @@
-import { useState } from "react";
+import { useState, type ChangeEvent, type FormEvent } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import type { AuthResponse, SignInFormData } from "../types/index";
+import { buildApiUrl } from "../utils/apiConfig.js";
 
-// export default function SignIn({
-//   setSuccessMessageFromSignUp,
-//   setIsSignedIn,
-//   setUserExistMessage,
-// }) {
-export default function SignIn({ setIsSignedIn }) {
+interface SignInProps {
+  setIsSignedIn?: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export default function SignIn({ setIsSignedIn }: SignInProps) {
   const navigate = useNavigate();
-  // const location = useLocation();
-  // const signUpSuccessMessage = location.state?.successMessage || "";
-  // const signUpErrorMessage = location.state?.errorMessage || "";
   const location = useLocation();
-  const signUpSuccessMessage = location.state?.successMessage || "";
-  const signUpErrorMessage = location.state?.errorMessage || "";
+  const signUpSuccessMessage =
+    (location.state as { successMessage?: string } | null)?.successMessage ?? "";
+  const signUpErrorMessage =
+    (location.state as { errorMessage?: string } | null)?.errorMessage ?? "";
+  const redirectPath =
+    (location.state as { from?: { pathname?: string } } | null)?.from?.pathname || "/";
 
-  // Grab the saved location route path, or default to home "/"
-  const redirectPath = location.state?.from?.pathname || "/";
-
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<SignInFormData>({
     email: "",
     password: "",
   });
   const [errorMessage, setErrorMessage] = useState("");
 
-  const handleChange = (e) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((current) => ({
+      ...current,
+      [name as keyof SignInFormData]: value,
+    }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrorMessage("");
 
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/auth/login`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
-        },
-      );
+      const response = await fetch(buildApiUrl("/api/auth/login"), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
 
       if (response.ok) {
-        const data = await response.json();
+        const data = (await response.json()) as AuthResponse;
         const token = data.token;
 
         if (token) {
-          // 1. Save token into storage first
           localStorage.setItem("userToken", token);
 
-          // 2. Turn on the global login state (Updates Navbar options instantly)
           if (setIsSignedIn) {
             setIsSignedIn(true);
           }
 
-          // 3. Wait a tiny millisecond split-second for React state to cycle,
-          // then execute the redirect path to break through the page lock!
           setTimeout(() => {
             navigate(redirectPath, { replace: true });
           }, 0);
@@ -77,20 +72,6 @@ export default function SignIn({ setIsSignedIn }) {
         onSubmit={handleSubmit}
         className="card w-full max-w-sm bg-base-100 shadow-xl p-4 space-y-4 rounded-lg"
       >
-        {/* <h5 className="text-green-600">{setSuccessMessageFromSignUp}</h5>
-        <h5 className="text-red-600">{setUserExistMessage}</h5> */}
-        {/* {signUpSuccessMessage && !errorMessage && (
-          <h5 className="text-green-600 font-bold text-sm text-center bg-green-50 border border-green-200 p-2 rounded-lg">
-            {signUpSuccessMessage}
-          </h5>
-        )}
-
-        {signUpErrorMessage && !errorMessage && (
-          <h5 className="text-red-500 font-bold text-sm text-center bg-red-50 border border-red-200 p-2 rounded-lg">
-            {signUpErrorMessage}
-          </h5>
-        )} */}
-
         {signUpSuccessMessage && (
           <h5 className="text-green-600">{signUpSuccessMessage}</h5>
         )}
@@ -142,10 +123,7 @@ export default function SignIn({ setIsSignedIn }) {
         </div>
 
         <p className="text-sm text-center mt-4">
-          No account yet?{" "}
-          <Link to="/signup" className="link hover:underline">
-            Sign Up
-          </Link>
+          No account yet? <Link to="/signup" className="link hover:underline">Sign Up</Link>
         </p>
       </form>
     </div>
